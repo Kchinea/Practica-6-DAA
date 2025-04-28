@@ -1,6 +1,6 @@
-namespace Pract5DAA.Algorithm;
+// namespace Pract5DAA.Algorithm;
 
-public interface IAlgorithm {
-  public Solution Solve(Instance instance);
-  string GetName { get; }
-}
+// public interface IAlgorithm {
+//   public Solution Solve(Instance instance);
+//   string GetName { get; }
+// }
