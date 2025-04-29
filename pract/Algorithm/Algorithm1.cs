@@ -1,6 +1,6 @@
 namespace Pract5DAA.Algorithm;
 public class GreedyMaximumDiversity : IAlgorithm  {
-  private int m; // número de puntos a seleccionar
+  private int m;
   public GreedyMaximumDiversity(int m) {
     this.m = m;
   }
@@ -11,7 +11,6 @@ public class GreedyMaximumDiversity : IAlgorithm  {
     return new Solution(GetName, instance.Name, diversity, selected, m);
   }
   private List<Point> Greedy(Instance instance, int m) {
-    // Copiar los puntos manualmente
     List<Point> Elem = new List<Point>();
     foreach (var p in instance.Points) {
       Elem.Add(p);
@@ -28,9 +27,7 @@ public class GreedyMaximumDiversity : IAlgorithm  {
             furthest = Elem[i];
         }
       }
-      // Añadir a S
       S.Add(furthest);
-      // Eliminar de Elem
       for (int i = 0; i < Elem.Count; i++){
         if (Elem[i] == furthest){
           Elem.RemoveAt(i);

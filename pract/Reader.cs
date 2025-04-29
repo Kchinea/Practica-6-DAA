@@ -30,14 +30,11 @@ public class Reader {
       string? line = sr.ReadLine();
       int lineCounter = 0;  
       while (line != null) {
-        // 1. Limpiar la línea
         line = line.Trim();
-        // 2. Si la línea está vacía, saltarla
         if (line == "") {
           line = sr.ReadLine();
           continue;
         }
-        // 3. Separar tanto por espacios como por tabulaciones manualmente
         List<string> parts = new List<string>();
         string current = "";
         foreach (char c in line) {
@@ -54,7 +51,6 @@ public class Reader {
         if (current != "") {
           parts.Add(current);
         }
-        // 4. Procesar la línea
         if (lineCounter == 0) {
           numPoints = int.Parse(parts[0]);
         }

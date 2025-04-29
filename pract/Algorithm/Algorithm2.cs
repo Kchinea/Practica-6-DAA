@@ -1,6 +1,6 @@
 namespace Pract5DAA.Algorithm;
 public class GraspMaximumDiversity : IAlgorithm {
-  private int m; // número de puntos a seleccionar
+  private int m;
   private Random random;
   public GraspMaximumDiversity(int m) {
     this.m = m;
@@ -20,28 +20,22 @@ public class GraspMaximumDiversity : IAlgorithm {
     List<Point> S = new List<Point>();
     Point center = GetCenter(Elem);
     while (S.Count < m) {
-      // Calcular todas las distancias al centro
       List<(Point point, double distance)> distances = new List<(Point, double)>();
       for (int i = 0; i < Elem.Count; i++) {
         double distance = CalculateDistance(Elem[i], center);
         distances.Add((Elem[i], distance));
       }
-      // Ordenar por distancia descendente
       distances.Sort((a, b) => b.distance.CompareTo(a.distance));
-      // Tomar los tres mejores (o menos si hay pocos elementos)
       int candidatesCount = Math.Min(3, distances.Count);
       int chosenIndex = random.Next(candidatesCount);
       Point selectedPoint = distances[chosenIndex].point;
-      // Añadir a S
       S.Add(selectedPoint);
-      // Eliminar de Elem
       for (int i = 0; i < Elem.Count; i++) {
         if (Elem[i] == selectedPoint) {
           Elem.RemoveAt(i);
           break;
         }
       }
-      // Recalcular centro
       center = GetCenter(S);
     }
     return S;
