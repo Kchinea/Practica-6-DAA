@@ -1,59 +1,82 @@
-// namespace Pract5DAA.Algorithm;
-
-// public class Algorithm1 : IAlgorithm {
-//   private string _name = "Voraz";
-//   public Solution Solve(Instance instance) {
-//     List<Truck> vehicles = new List<Truck>();
-//     PathMap toVisit = new PathMap(instance.Zones.Zones);
-//     List<Zone> zonesOfMap = new List<Zone>();
-//     zonesOfMap.Union(instance.Zones.Zones);
-//     zonesOfMap.Union(instance.Stations);
-//     zonesOfMap.Add(instance.Depot);
-//     PathMap Map = new PathMap(zonesOfMap);
-//     int timeLimit = instance.maximumTime;
-//     int loadLimit = instance.maximumLoad;
-//     int num_vehicles = 0;
-//     PathMap Stations =  new PathMap(instance.Stations);
-//     while(toVisit.length > 0) {
-//       Truck currentTruck = new Truck(num_vehicles, loadLimit, timeLimit, instance.speed, Map);
-//       currentTruck.AddZone(instance.Depot, 0, 0);
-//       bool flag = true;
-//       while(flag) {
-//         if (toVisit.length == 0) {
-//           break;
-//         }
-//         Zone closest = toVisit.ClosestZone(currentTruck.LastZone.Position);
-//         int timeToNext = currentTruck.LastZone.TimeToNext(closest, instance.speed) + closest.CollectionTime;
-//         Zone closerStation = Stations.ClosestZone(closest.Position);
-//         int timeStationFromNext = closest.TimeToNext(closerStation, instance.speed);
-//         int timeToDepot = closerStation.TimeToNext(instance.Depot, instance.speed);
-//         int loadNext = currentTruck.CurrentLoad + closest.Load;
-//         int totallyTime =  timeToNext + timeStationFromNext + timeToDepot;
-//         if(totallyTime <= timeLimit - currentTruck.CurrentTime && loadNext <= loadLimit ) {
-//           currentTruck.AddZone(closest, timeToNext, closest.Load);
-//           toVisit.RemoveZone(closest);
-//         } else {
-//           if (totallyTime <= timeLimit - currentTruck.CurrentTime) {
-//             closerStation = Stations.ClosestZone(currentTruck.LastZone.Position);
-//             timeToNext = currentTruck.LastZone.TimeToNext(closerStation, instance.speed);
-//             currentTruck.AddZone(closerStation, timeToNext, closest.Load);
-//             currentTruck.CurrentLoad = 0;
-//           } else {
-//             break;
-//           }
-//         }
-//       }
-//       if (!instance.Stations.Contains(currentTruck.LastZone)) {
-//         currentTruck.AddZone(Stations.ClosestZone(currentTruck.LastZone.Position), currentTruck.LastZone.TimeToNext(Stations.ClosestZone(currentTruck.LastZone.Position), instance.speed), 0);
-//         currentTruck.AddZone(instance.Depot, currentTruck.LastZone.TimeToNext(instance.Depot, instance.speed), 0);
-//       } else {
-//         currentTruck.AddZone(instance.Depot, currentTruck.LastZone.TimeToNext(instance.Depot, instance.speed), 0);
-//       }
-//       vehicles.Add(currentTruck);
-//       num_vehicles++;
-//     }
-//     Solution solution = new Solution(vehicles);
-//     return solution;
-//   }
-//   public string GetName => _name;
-// }
+namespace Pract5DAA.Algorithm;
+public class GreedyMaximumDiversity : IAlgorithm  {
+  private int m; // número de puntos a seleccionar
+  public GreedyMaximumDiversity(int m) {
+    this.m = m;
+  }
+  public string GetName => "GreedyMaximumDiversity";
+  public Solution Solve(Instance instance) {
+    List<Point> selected = Greedy(instance, m);
+    double diversity = CalculateTotalDiversity(selected);
+    return new Solution(GetName, instance.Name, diversity, selected);
+  }
+  private List<Point> Greedy(Instance instance, int m) {
+    // Copiar los puntos manualmente
+    List<Point> Elem = new List<Point>();
+    foreach (var p in instance.Points) {
+      Elem.Add(p);
+    }
+    List<Point> S = new List<Point>();
+    Point center = GetCenter(Elem);
+    while (S.Count < m) {
+      Point furthest = null;
+      double maxDistance = double.MinValue;
+      for (int i = 0; i < Elem.Count; i++) {
+        double distance = CalculateDistance(Elem[i], center);
+        if (distance > maxDistance) {
+            maxDistance = distance;
+            furthest = Elem[i];
+        }
+      }
+      // Añadir a S
+      S.Add(furthest);
+      // Eliminar de Elem
+      for (int i = 0; i < Elem.Count; i++){
+        if (Elem[i] == furthest){
+          Elem.RemoveAt(i);
+          break;
+        }
+      }
+      center = GetCenter(S);
+    }
+    return S;
+  }
+  private Point GetCenter(List<Point> points) {
+    if (points.Count == 0)
+      throw new ArgumentException("List of points is empty");
+    int dimension = points[0].Size;
+    double[] centerCoordinates = new double[dimension];
+    for (int i = 0; i < points.Count; i++) {
+      for (int j = 0; j < dimension; j++) {
+        centerCoordinates[j] += points[i].Coordinates[j];
+      }
+    }
+    for (int j = 0; j < dimension; j++) {
+      centerCoordinates[j] /= points.Count;
+    }
+    List<double> coords = new List<double>();
+    for (int j = 0; j < dimension; j++) {
+      coords.Add(centerCoordinates[j]);
+    }
+    return new Point(coords);
+  }
+  private double CalculateDistance(Point p1, Point p2) {
+    if (p1.Size != p2.Size)
+      throw new ArgumentException("Points must have the same dimensions");
+    double sum = 0;
+    for (int i = 0; i < p1.Size; i++) {
+      double diff = p1.Coordinates[i] - p2.Coordinates[i];
+      sum += diff * diff;
+    }
+    return Math.Sqrt(sum);
+  }
+  private double CalculateTotalDiversity(List<Point> points) {
+    double total = 0;
+    for (int i = 0; i < points.Count; i++) {
+      for (int j = i + 1; j < points.Count; j++) {
+        total += CalculateDistance(points[i], points[j]);
+      }
+    }
+    return total;
+  }
+}

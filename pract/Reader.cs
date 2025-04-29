@@ -1,83 +1,83 @@
 namespace Pract5DAA;
 
-public class Reader
-{
+public class Reader {
   private string _directory;
 
-  public Reader(string directory)
-  {
+  public Reader(string directory) {
     _directory = directory;
   }
 
-  public List<Instance> ReadAll()
-  {
+  public List<Instance> ReadAll() {
     List<Instance> instances = new List<Instance>();
-    try
-    {
-      string[] files = Directory.GetFiles(_directory, "*.txt")
-                                 .OrderBy(f => f.Trim(new char[] { 'i', '*', '.' }))
-                                 .ToArray();
-      foreach (string file in files)
-      {
+    try {
+      string[] files = Directory.GetFiles(_directory, "*.txt").OrderBy(f => f.Trim(new char[] { 'i', '*', '.' })).ToArray();
+      foreach (string file in files) {
         Reader reader = new Reader(file);
         instances.Add(reader.Read());
       }
     }
-    catch (Exception e)
-    {
+    catch (Exception e) {
       Console.WriteLine($"Error al leer archivos en {_directory}: {e.Message}");
     }
     return instances;
   }
 
-  public Instance Read()
-  {
+  public Instance Read() {
     int size = 0, numPoints = 0;
     List<Point> points = new List<Point>();
-
-    try
-    {
+    try {
       StreamReader sr = new StreamReader(this._directory);
       string? line = sr.ReadLine();
-      int lineCounter = 0;
-
-      while (line != null)
-      {
-        string[] parts = line.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        if (lineCounter == 0)
-        {
+      int lineCounter = 0;  
+      while (line != null) {
+        // 1. Limpiar la línea
+        line = line.Trim();
+        // 2. Si la línea está vacía, saltarla
+        if (line == "") {
+          line = sr.ReadLine();
+          continue;
+        }
+        // 3. Separar tanto por espacios como por tabulaciones manualmente
+        List<string> parts = new List<string>();
+        string current = "";
+        foreach (char c in line) {
+          if (c == ' ' || c == '\t') {
+            if (current != "") {
+              parts.Add(current);
+              current = "";
+            }
+          }
+          else {
+            current += c;
+          }
+        }
+        if (current != "") {
+          parts.Add(current);
+        }
+        // 4. Procesar la línea
+        if (lineCounter == 0) {
           numPoints = int.Parse(parts[0]);
         }
-        else if (lineCounter == 1)
-        {
+        else if (lineCounter == 1) {
           size = int.Parse(parts[0]);
         }
-        else
-        {
+        else {
           List<double> coordinates = new List<double>();
-
-          foreach (string part in parts)
-          {
+          foreach (string part in parts) {
             double coordinate = double.Parse(part.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
             coordinates.Add(coordinate);
           }
-
           Point point = new Point(coordinates);
           points.Add(point);
         }
-
         line = sr.ReadLine();
         lineCounter++;
       }
-
       sr.Close();
     }
-    catch (Exception e)
-    {
+    catch (Exception e) {
       Console.WriteLine($"Error al leer el archivo {_directory}: {e.Message}");
     }
-
-    return new Instance(size, numPoints, points);
+    return new Instance(size, numPoints, points, _directory);
   }
 }
