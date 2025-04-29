@@ -12,10 +12,10 @@ class Program {
       return;
     }
     List<IAlgorithm> algorithms = new List<IAlgorithm> {
-      new GreedyMaximumDiversity(2),
-      new GreedyMaximumDiversity(3),
-      new GreedyMaximumDiversity(4),
-      new GreedyMaximumDiversity(5),
+      // new GreedyMaximumDiversity(2),
+      // new GreedyMaximumDiversity(3),
+      // new GreedyMaximumDiversity(4),
+      // new GreedyMaximumDiversity(5),
       new GraspMaximumDiversity(2),
       new GraspMaximumDiversity(3),
       new GraspMaximumDiversity(4),
@@ -34,10 +34,10 @@ class Program {
   }
   static void PrintResultsTable(List<Solution> solutions) {
     Console.WriteLine("\n--- RESULTADOS ---");
-    Console.WriteLine($"{"Algoritmo",-40} {"Instancia",-20} {"Diversidad",-15}");
+    Console.WriteLine($"{"Algoritmo",-40} {"m",-15} {"Instancia",-20} {"Diversidad",-15}");
     Console.WriteLine(new string('-', 80));
     foreach (var sol in solutions) {
-      Console.WriteLine($"{sol.AlgorithmName,-40} {sol.InstanceName,-20} {sol.DiversityValue,-15:F2}");
+      Console.WriteLine($"{sol._algorithmName,-40} {sol._solutionSize,-15:F2} {sol._instanceName,-20} {sol._diversityValue,-15:F2} ");
     }
   }
 }

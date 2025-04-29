@@ -8,7 +8,7 @@ public class GreedyMaximumDiversity : IAlgorithm  {
   public Solution Solve(Instance instance) {
     List<Point> selected = Greedy(instance, m);
     double diversity = CalculateTotalDiversity(selected);
-    return new Solution(GetName, instance.Name, diversity, selected);
+    return new Solution(GetName, instance.Name, diversity, selected, m);
   }
   private List<Point> Greedy(Instance instance, int m) {
     // Copiar los puntos manualmente

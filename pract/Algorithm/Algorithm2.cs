@@ -10,7 +10,7 @@ public class GraspMaximumDiversity : IAlgorithm {
   public Solution Solve(Instance instance) {
     List<Point> selected = Grasp(instance, m);
     double diversity = CalculateTotalDiversity(selected);
-    return new Solution(GetName, instance.Name, diversity, selected);
+    return new Solution(GetName, instance.Name, diversity, selected, m);
   }
   private List<Point> Grasp(Instance instance, int m) {
     List<Point> Elem = new List<Point>();
