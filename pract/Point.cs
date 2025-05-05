@@ -2,6 +2,7 @@ namespace Pract5DAA;
 public class Point {
   public int _size;
   public List<double> _coordinates;
+  public int _id;
   public Point(List<double> coordinates){
     this._coordinates = coordinates;
     this._size = coordinates.Count;

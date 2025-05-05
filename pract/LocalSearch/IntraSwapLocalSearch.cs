@@ -1,7 +1,7 @@
 namespace Pract5DAA.LocalSearch;
 public class LocalSearchMaximumDiversity {
   public static Solution Improve(Solution initialSolution, Instance instance) {
-    List<Point> selected = new List<Point>(initialSolution._selectedPoints);
+    List<Point> selected = new List<Point>(initialSolution._selectedPoints.Points);
     List<Point> notSelected = instance.Points.Except(selected).ToList();
     double currentDiversity = CalculateTotalDiversity(selected);
     for (int i = 0; i < selected.Count; i++) {

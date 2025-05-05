@@ -24,11 +24,13 @@ public class Map {
   public void Clear() {
     _points.Clear();
   }
-  public void Print() {
-    Console.WriteLine("Map:");
+  public override string ToString() {
+    string result = "";
+    result += "Map:";
     foreach (var point in _points) {
-      Console.WriteLine(point);
+      result += point.ToString();
     }
+    return result;
   }
   public double CalculateDistance(Point point1, Point point2) {
     return point1.CalculateDistance(point2);
